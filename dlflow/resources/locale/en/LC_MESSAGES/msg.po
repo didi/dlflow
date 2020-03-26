@@ -1,0 +1,8 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: DLFlow 1.0.0\n"
+"POT-Creation-Date: 2020-03-12 18:05+0800\n"
+"PO-Revision-Date: 2020-03-12 18:05+0800\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"

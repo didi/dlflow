@@ -1,0 +1,394 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: DLFlow 1.0.0\n"
+"POT-Creation-Date: 2020-03-23 18:07+0800\n"
+"PO-Revision-Date: 2020-03-23 18:07+0800\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+# dlflow/tasks/_predict.py - lineno: 97
+msgid "Predicting result save to {}"
+msgstr "预测结果保存到 {}"
+
+# dlflow/tasks/_predict.py - lineno: 99
+msgid "Predicting Done."
+msgstr "预测完成."
+
+# dlflow/tasks/__init__.py - lineno: 54
+msgid "Start running: {}..."
+msgstr "开始运行: {}..."
+
+# dlflow/tasks/__init__.py - lineno: 62
+msgid "Task <{}> spend time: {:>.6f}s"
+msgstr "任务 <{}> 运行耗时: {:>.6f}秒"
+
+# dlflow/tasks/_build.py - lineno: 55
+# dlflow/tasks/_encode.py - lineno: 67
+msgid "Using HDFS fmap: {}"
+msgstr "使用HDFS上的fmap: {}"
+
+# dlflow/tasks/_build.py - lineno: 60
+msgid "Using local fmap: {}"
+msgstr "使用本地的fmap: {}"
+
+# dlflow/tasks/_build.py - lineno: 65
+msgid "No available fmap found, pleas process feature encoding first."
+msgstr "没有发现可用的fmap, 请先执行特征编码步骤."
+
+# dlflow/tasks/_build.py - lineno: 70
+msgid "Getting ckpt from HDFS: {}"
+msgstr "拉取HDFS上的ckpt: {}"
+
+# dlflow/tasks/_build.py - lineno: 75
+msgid "Using local ckpt: {}"
+msgstr "使用本地ckpt: {}"
+
+# dlflow/tasks/_build.py - lineno: 80
+msgid "No available ckpt found, reinitializing..."
+msgstr "没有发现可用的ckpt, 重新初始化..."
+
+# dlflow/tasks/_merge.py - lineno: 55
+msgid "Input feature configuration is not exists when fit=true: {}"
+msgstr "输入特征配置文件不存在，并且给定了fit=true: {}"
+
+# dlflow/tasks/_merge.py - lineno: 86
+msgid "Feature merge done."
+msgstr "特征融合完成."
+
+# dlflow/tasks/_merge.py - lineno: 125
+msgid "Feature merge fail! Got non-zero return code."
+msgstr "特征融合失败! 返回了非0状态值."
+
+# dlflow/tasks/_encode.py - lineno: 40
+msgid "TFRecords already exists, skip encoding."
+msgstr "TFRecords已经存在，跳过编码步骤."
+
+# dlflow/tasks/_encode.py - lineno: 47
+msgid "Encode result already exists, encoding done."
+msgstr "编码结果已经存在，结束编码."
+
+# dlflow/tasks/_encode.py - lineno: 72
+msgid "There is no fmap available, start to generate fmap by parsing features."
+msgstr "没有可用的fmap, 开始解析特征生成fmap."
+
+# dlflow/tasks/_encode.py - lineno: 87
+msgid "Put fmap to HDFS: {}"
+msgstr "推送fmap到HDFS: {}"
+
+# dlflow/tasks/_encode.py - lineno: 93
+msgid "Local fmap directory already exists, it will be overwritten: {}"
+msgstr "本地fmap目录已经存在, 它将被覆盖: {}"
+
+# dlflow/tasks/_encode.py - lineno: 119
+msgid "Get wrong type bucket configuration."
+msgstr "分桶配置错误."
+
+# dlflow/tasks/_encode.py - lineno: 140
+msgid "Encoding done."
+msgstr "编码结束."
+
+# dlflow/tasks/_train.py - lineno: 48
+# dlflow/tasks/_evaluate.py - lineno: 47
+msgid "Loading model weight success."
+msgstr "成功加载模型权重."
+
+# dlflow/tasks/_train.py - lineno: 55
+msgid "Local ckpt directory already exists, it will be overwritten: {}"
+msgstr "本地ckpt目录已经存在, 它将被覆盖: {}"
+
+# dlflow/tasks/_train.py - lineno: 59
+msgid "New ckpt is saved to {}"
+msgstr "新的ckpt被保存到 {}"
+
+# dlflow/tasks/_train.py - lineno: 62
+msgid "Creating soft link to local ckpt {}"
+msgstr "建立本地ckpt的软连接 {}"
+
+# dlflow/tasks/_train.py - lineno: 69
+msgid "The ckpt already exists on HDFS, the old one will be overwritten."
+msgstr "HDFS上已存在ckpt, 旧的ckpt将被覆盖."
+
+# dlflow/tasks/_train.py - lineno: 72
+msgid "Put ckpt to HDFS: {}"
+msgstr "推送ckpt到HDFS: {}"
+
+# dlflow/tasks/_train.py - lineno: 75
+msgid "Training don."
+msgstr "完成训练."
+
+# dlflow/tasks/_evaluate.py - lineno: 52
+msgid "Evaluating done."
+msgstr "评估完成."
+
+# dlflow/features/feature_parser.py - lineno: 20
+msgid "Unknown feature parser '{}'"
+msgstr "未知的特征解析器 '{}'"
+
+# dlflow/features/parser_spark.py - lineno: 134
+msgid "Too many categories on column '{name}'!\nColumn '{name}' takes {size} categories!"
+msgstr "'{name}'列中有太多的类别!\n'{name}'列中有 {size} 个类别值!"
+
+# dlflow/features/parser_spark.py - lineno: 208
+msgid "Enforced encoding for column '{name}'!\nIgnore encode flag: False. Type of '{name}' is 'MapType', it must be encoded!"
+msgstr "对'{name}'列强制进行编码!\n忽略编码标志: False. 列'{name}'的类型为'MapType', 必须进行编码!"
+
+# dlflow/features/parser_spark.py - lineno: 329
+# dlflow/features/parser_spark.py - lineno: 340
+msgid "Parsing column '{}' with type <{}>"
+msgstr "解析列 '{}' 类型为 <{}>"
+
+# dlflow/features/parser_spark.py - lineno: 355
+msgid "The fmap has been fitted. Please call 'reset' before refitting."
+msgstr "fmap已经训练过了. 重新训练请先调用'reset'."
+
+# dlflow/features/parser_spark.py - lineno: 395
+msgid "The fmap is not fitted. Please call 'fit' first."
+msgstr "fmap没有训练过. 请先调用'fit'训练."
+
+# dlflow/features/parser_spark.py - lineno: 525
+msgid "Give up normalizing for '{}'!\nUnknown method '{}' for creating normalizer.\nThose normalizer are allowed: {}"
+msgstr "放弃对'{}'的归一化!\n无法创建未知的归一化方法'{}'.\n被允许的归一化方法: {}"
+
+# dlflow/features/parser_spark.py - lineno: 540
+msgid "Give up loading normalizer!\nUnknown method '{}' for loading normalizer."
+msgstr "放弃加载归一化方法!\n无法加载未知的归一化方法'{}'."
+
+# dlflow/features/parser_spark.py - lineno: 552
+msgid "Generating default normalizer."
+msgstr "使用默认的归一化方法."
+
+# dlflow/features/parser_spark.py - lineno: 556
+msgid "Parameter Error.\nType of 'bucket_conf' expected <class 'dict'> but got {}, the default will be used."
+msgstr "参数错误.\n'bucket_conf'的类型应为<class 'dict'>, 实际为{}, 将使用默认配置."
+
+# dlflow/features/parser_spark.py - lineno: 564
+msgid "Generating normalizer according to buckets configuration."
+msgstr "根据分桶配置信息生成归一化方法."
+
+# dlflow/features/parser_spark.py - lineno: 587
+msgid "Bucket '{}' was set unknown normalize method '{}'!"
+msgstr "桶'{}'设置了未知的归一化方法'{}'!"
+
+# dlflow/features/feature_base.py - lineno: 51
+# dlflow/mgr/regmgr.py - lineno: 67
+msgid "Unknown key '{}'"
+msgstr "未知的key '{}'"
+
+# dlflow/features/feature_base.py - lineno: 111
+# dlflow/features/feature_base.py - lineno: 165
+# dlflow/features/feature_base.py - lineno: 178
+# dlflow/features/feature_base.py - lineno: 378
+msgid "Parameter type expected {}, but got {}"
+msgstr "期望的参数类型为{}, 实际为{}"
+
+# dlflow/features/feature_base.py - lineno: 130
+msgid "Value of 'offset' must >= 0"
+msgstr "'offset'取值必须大于等于0"
+
+# dlflow/utils/ftools.py - lineno: 60
+msgid "Can not delete file {}"
+msgstr "无法删除文件 {}"
+
+# dlflow/utils/ftools.py - lineno: 184
+# dlflow/utils/ftools.py - lineno: 196
+msgid "Can't recognize file type '{}' for given file {}"
+msgstr "无法识别文件类型'{}', 给定文件 {}"
+
+# dlflow/utils/check.py - lineno: 11
+msgid "This program requires at least Python 3.6"
+msgstr "本程序要求Python版本至少为3.6"
+
+# dlflow/utils/check.py - lineno: 14
+msgid "This program require Tensorflow2.0"
+msgstr "本程序需要Tensorflow2.0版本"
+
+# dlflow/utils/sparkapp.py - lineno: 38
+msgid "No model named 'pyspark'. Trying to call 'findspark'..."
+msgstr "没有'pyspark'模块. 尝试调用'findspark'模块..."
+
+# dlflow/utils/sparkapp.py - lineno: 42
+msgid "Loading pyspark success."
+msgstr "成功加载pyspark."
+
+# dlflow/utils/sparkapp.py - lineno: 46
+msgid "Can not find model 'pysaprk' or 'findspark'."
+msgstr "无法找到'pyspark'模块或者'findspark'模块."
+
+# dlflow/utils/sparkapp.py - lineno: 85
+msgid "Using exists HDFS Handler."
+msgstr "使用已有的HDFS Handler."
+
+# dlflow/utils/sparkapp.py - lineno: 99
+msgid "Using new local SparkContext."
+msgstr "使用新的本地SparkContext."
+
+# dlflow/utils/sparkapp.py - lineno: 102
+msgid "Using presetting SparkContext."
+msgstr "使用预设的SparkContext."
+
+# dlflow/utils/sparkapp.py - lineno: 106
+msgid "Expected type {} for 'sc', but got {}"
+msgstr "'sc'的类型应为 {}, 实际得到为 {}"
+
+# dlflow/utils/sparkapp.py - lineno: 110
+msgid "SparkContext has already closed!"
+msgstr "SparkContext已经关闭!"
+
+# dlflow/utils/sparkapp.py - lineno: 127
+msgid "Can not access HDFS! Because SparkContext wasn't initialize!"
+msgstr "无法访问HDFS! 因为SparkContext没有初始化!"
+
+# dlflow/utils/sparkapp.py - lineno: 181
+msgid "Illegal HDFS Path: {}"
+msgstr "无效的HDFS路径: {}"
+
+# dlflow/utils/sparkapp.py - lineno: 215
+msgid "Testing {}"
+msgstr "正在测试 {}"
+
+# dlflow/utils/sparkapp.py - lineno: 232
+# dlflow/utils/sparkapp.py - lineno: 250
+msgid "Can't find valid partition on {}"
+msgstr "没有找到有效的分区 {}"
+
+# dlflow/utils/sparkapp.py - lineno: 235
+msgid "Find valid partition {}"
+msgstr "发现有效分区 {}"
+
+# dlflow/utils/sparkapp.py - lineno: 254
+msgid "Find valid hive date {}"
+msgstr "发现可用的hive日期 {}"
+
+# dlflow/utils/sparkapp.py - lineno: 272
+msgid "Using exists spark session."
+msgstr "使用已有的spark session."
+
+# dlflow/utils/sparkapp.py - lineno: 280
+msgid "Initializing Spark App: {}"
+msgstr "初始化Spark App: {}"
+
+# dlflow/utils/sparkapp.py - lineno: 290
+msgid "Using spark config:\n{}"
+msgstr "正在使用spark配置:\n{}"
+
+# dlflow/utils/sparkapp.py - lineno: 309
+msgid "Spark Version: {}"
+msgstr "当前Spark版本: {}"
+
+# dlflow/utils/sparkapp.py - lineno: 334
+msgid "Spark APP not initialize."
+msgstr "Spark APP 没有初始化."
+
+# dlflow/utils/sparkapp.py - lineno: 341
+# dlflow/utils/sparkapp.py - lineno: 362
+msgid "Directory already exists, it will be overwritten: {}"
+msgstr "目录已存在, 它将被覆盖: {}"
+
+# dlflow/utils/sparkapp.py - lineno: 376
+msgid "Saving parquet to {}"
+msgstr "保存parquet到 {}"
+
+# dlflow/utils/sparkapp.py - lineno: 385
+msgid "Compress save success with {} parts. Time spend: {:>.0f}s"
+msgstr "成功压缩保存 {}个分区. 用时: {:>.0f}秒"
+
+# dlflow/utils/sparkapp.py - lineno: 389
+msgid "Delete tmp dir - {}"
+msgstr "删除临时目录 - {}"
+
+# dlflow/utils/sparkapp.py - lineno: 391
+msgid "Delete success."
+msgstr "删除成功."
+
+# dlflow/utils/sparkapp.py - lineno: 393
+msgid "Delete fail."
+msgstr "删除失败."
+
+# dlflow/mgr/regmgr.py - lineno: 117
+msgid "Task register is not allowed instantiating!"
+msgstr "任务注册器不允许被实例化!"
+
+# dlflow/mgr/regmgr.py - lineno: 123
+msgid "Model register is not allowed instantiating!"
+msgstr "模型注册器不允许被实例化!"
+
+# dlflow/mgr/regmgr.py - lineno: 136
+msgid "Loading {}. From: {}"
+msgstr "加载 {}. 来源目录: {}"
+
+# dlflow/mgr/regmgr.py - lineno: 144
+msgid "Loading DLFlow standard task. From: {}"
+msgstr "加载DLFlow标准任务. 来源目录: {}"
+
+# dlflow/mgr/regmgr.py - lineno: 149
+msgid "Loading DLFlow internal model. From: {}"
+msgstr "加载DLFlow内部模型. 来源目录: {}"
+
+# dlflow/mgr/regmgr.py - lineno: 164
+msgid "Scanning directory: {}"
+msgstr "正在扫描目录: {}"
+
+# dlflow/mgr/regmgr.py - lineno: 173
+msgid "  * Loading module: {}"
+msgstr "  * 载入模块: {}"
+
+# dlflow/mgr/cfgmgr.py - lineno: 251
+# dlflow/mgr/cfgmgr.py - lineno: 261
+# dlflow/mgr/cfgmgr.py - lineno: 292
+msgid "ConfigTree is not set!"
+msgstr "ConfigTree没有被设置!"
+
+# dlflow/mgr/cfgmgr.py - lineno: 455
+msgid "Key '{}' isn't found in the configurations!"
+msgstr "配置中没有找到key '{}'!"
+
+# dlflow/mgr/cfgmgr.py - lineno: 466
+# dlflow/mgr/cfgmgr.py - lineno: 494
+msgid "Level-REQUIRE key '{}' has been set, but not provide in configurations."
+msgstr "设置了REQUIRE级别的key '{}', 但没有在配置中给出该项."
+
+# dlflow/mgr/cfgmgr.py - lineno: 488
+msgid "All parsed configurations:\n{}"
+msgstr "全部解析后的配置:\n{}"
+
+# dlflow/mgr/cfgmgr.py - lineno: 551
+msgid "Circular references are found in the following keys, please check it!\n{}"
+msgstr "以下key中存在循环引用, 请检查!\n{}"
+
+# dlflow/engine/engine.py - lineno: 76
+msgid "Logging level is changed to '{}'"
+msgstr "更改日志等级为 '{}'"
+
+# dlflow/engine/engine.py - lineno: 88
+msgid "Start writing log to {}"
+msgstr "开始写入日志到 {}"
+
+# dlflow/engine/engine.py - lineno: 106
+msgid "All task done."
+msgstr "所有任务运行完成."
+
+# dlflow/engine/workflow.py - lineno: 151
+msgid "Can't build DAG, circular references are found, please check it!\n{}"
+msgstr "无法构建DAG, 存在循环引用, 请检查！\n{}"
+
+# dlflow/engine/workflow.py - lineno: 164
+msgid "\nVertices node info:"
+msgstr "\n顶点节点信息:"
+
+# dlflow/engine/workflow.py - lineno: 165
+msgid "\nDetail about neighbor:"
+msgstr "\n详细邻居信息:"
+
+# dlflow/engine/workflow.py - lineno: 279
+msgid "WorkflowDAG is not bound, please bind it first!"
+msgstr "没有绑定WorkflowDAG, 请先绑定!"
+
+# dlflow/engine/workflow.py - lineno: 283
+msgid "Bad configurations, please load it first!"
+msgstr "配置未被加载, 请先加载配置!"
+
+# dlflow/engine/workflow.py - lineno: 295
+msgid "Parameter 'param' expect type are 'str', 'WorkflowDAG' or 'None', but find '{}'!"
+msgstr "参数'param'应为'str','WorkflowDAG'或'None', 当前类型为'{}'!"

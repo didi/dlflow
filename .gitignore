@@ -1,0 +1,15 @@
+*.pyc
+*.ipynb
+.idea
+.ipynb_checkpoints
+.DS_Store
+__pycache__
+dlflow_default
+tmp
+build
+dist
+*.egg-info
+log
+tmp
+.idea/workspace.xml
+dlflow.iml
