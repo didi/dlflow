@@ -7,10 +7,15 @@ from pathlib import Path
 
 _HDFS_MODEL_DIR = "$HDFS_WORKSPACE/model/TAG=$MODEL_TAG" \
                   "/<dt=$MODEL_DATE:yyyy/mm/dd>"
+_HDFS_FEMODEL_DIR = "$HDFS_WORKSPACE/femodel/TAG=$FEATURE_TAG" \
+                    "/<dt=$MODEL_DATE:yyyy/mm/dd>"
 _HDFS_FEATURE_DIR = "$HDFS_WORKSPACE/feature/TAG=$FEATURE_TAG" \
                    "/<dt=$FEATURE_DATE:yyyy/mm/dd>"
+
 _LOCAL_MODEL_DIR = "$LOCAL_WORKSPACE/model/TAG=$MODEL_TAG" \
-                  "/<dt=$MODEL_DATE:yyyy/mm/dd>"
+                   "/<dt=$MODEL_DATE:yyyy/mm/dd>"
+_LOCAL_FEMODEL_DIR = "$LOCAL_WORKSPACE/femodel/TAG=$FEATURE_TAG" \
+                     "/<dt=$MODEL_DATE:yyyy/mm/dd>"
 _LOCAL_TMP_DIR = "$LOCAL_WORKSPACE/tmp"
 
 
@@ -32,9 +37,11 @@ class _Root(TaskNode):
 
         config.opt("HDFS_FEATURE_DIR", _HDFS_FEATURE_DIR),
         config.opt("HDFS_MODEL_DIR", _HDFS_MODEL_DIR),
+        config.opt("HDFS_FEMODEL_DIR", _HDFS_FEMODEL_DIR),
 
         config.opt("LOCAL_WORKSPACE", "./dlflow_default"),
         config.opt("LOCAL_MODEL_DIR", _LOCAL_MODEL_DIR),
+        config.opt("LOCAL_FEMODEL_DIR", _LOCAL_FEMODEL_DIR),
         config.opt("LOCAL_TMP_DIR", _LOCAL_TMP_DIR),
 
         config.opt("DROP_COLUMNS", [])
@@ -54,6 +61,7 @@ class _Root(TaskNode):
 
         config.LOCAL_WORKSPACE = solve_local_path(config.LOCAL_WORKSPACE)
         config.LOCAL_MODEL_DIR = solve_local_path(config.LOCAL_MODEL_DIR)
+        config.LOCAL_FEMODEL_DIR = solve_local_path(config.LOCAL_FEMODEL_DIR)
         config.LOCAL_TMP_DIR = solve_local_path(config.LOCAL_TMP_DIR)
 
         def seq_conf_parser(v, sign=","):
@@ -72,8 +80,7 @@ class _Root(TaskNode):
 
         if "SPARK" in config:
             app_name = ".".join(["DLFlow", config.uuid])
-
-            spark_conf = config.SPARK.dense_dict
+            spark_conf = config.SPARK.dense_dict if config.SPARK else {}
             spark_app = SparkBaseApp()
             spark_app.initialize_spark(app_name, spark_conf)
 

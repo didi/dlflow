@@ -27,7 +27,7 @@ _HDFS_TMP_DIR = "/user/dm/compress/tmp/dlflow"
 _HDFS_EXCEPT_PARTITION = 100
 
 
-def _init_spark():
+def init_spark():
     try:
         import pyspark
 
@@ -73,11 +73,6 @@ class HDFS(metaclass=SingletonMeta):
 
     @property
     def status(self):
-        """
-        status = True <=> (sc is not None) and (jsc is not None)
-        status = False <=> (sc is None) or (jsc is None)
-        """
-
         return self._status
 
     def initialize_hdfs(self, sc=None):
@@ -85,7 +80,7 @@ class HDFS(metaclass=SingletonMeta):
             logging.info(i18n("Using exists HDFS Handler."))
             return
 
-        _init_spark()
+        init_spark()
         from pyspark.sql import SparkSession
         from pyspark.context import SparkContext
 
@@ -182,11 +177,7 @@ class HDFS(metaclass=SingletonMeta):
 
         return new_path
 
-    def hdfs_concat_path(self,
-                         path1,
-                         path2,
-                         whole_path=False,
-                         header=None):
+    def hdfs_concat_path(self, path1, path2, whole_path=False, header=None):
         if header is None:
             prefix = self._header.strip()
         else:
@@ -200,10 +191,7 @@ class HDFS(metaclass=SingletonMeta):
 
         return new_path
 
-    def _degrade_hdfs(self,
-                      base_dt,
-                      hdfs_patten,
-                      max_degrade):
+    def _degrade_hdfs(self, base_dt, hdfs_patten, max_degrade):
         valid_dir = None
         valid_date = None
         dt = datetime.strptime(base_dt, "%Y%m%d")
@@ -219,40 +207,26 @@ class HDFS(metaclass=SingletonMeta):
 
         return valid_dir, valid_date
 
-    def safe_hdfs_path(self,
-                       base_dt,
-                       hdfs_patten,
-                       max_degrade=7):
-        valid_dir, _ = self._degrade_hdfs(base_dt,
-                                          hdfs_patten,
-                                          max_degrade)
+    def safe_hdfs_path(self, base_dt, hdfs_patten, max_degrade=7):
+        valid_dir, _ = self._degrade_hdfs(base_dt, hdfs_patten, max_degrade)
 
         if valid_dir is None:
             raise ValueError(
-                i18n("Can't find valid partition on {}")
-                .format(hdfs_patten))
+                i18n("Can't find valid partition on {}").format(hdfs_patten))
 
-        logging.info(i18n("Find valid partition {}")
-                     .format(valid_dir))
+        logging.info(i18n("Find valid partition {}").format(valid_dir))
         return valid_dir
 
-    def safe_hive_date(self,
-                       base_dt,
-                       hdfs_patten,
-                       max_degrade=7,
+    def safe_hive_date(self, base_dt, hdfs_patten, max_degrade=7,
                        fmt_dt="%Y%m%d"):
-        _, valid_dt = self._degrade_hdfs(base_dt,
-                                         hdfs_patten,
-                                         max_degrade)
+        _, valid_dt = self._degrade_hdfs(base_dt, hdfs_patten, max_degrade)
 
         if valid_dt is None:
             raise ValueError(
-                i18n("Can't find valid partition on {}")
-                .format(hdfs_patten))
+                i18n("Can't find valid partition on {}").format(hdfs_patten))
 
         valid_dt = valid_dt.strftime(fmt_dt)
-        logging.info(i18n("Find valid hive date {}")
-                     .format(valid_dt))
+        logging.info(i18n("Find valid hive date {}").format(valid_dt))
         return valid_dt
 
 
@@ -277,24 +251,30 @@ class SparkBaseApp(metaclass=SingletonMeta):
         if self._hdfs.status:
             self._hdfs.close()
 
-        logging.info(i18n("Initializing Spark App: {}")
-                     .format(app_name))
+        logging.info(i18n("Initializing Spark App: {}").format(app_name))
 
-        _init_spark()
+        init_spark()
         from pyspark.sql import SparkSession
 
         spark_conf = spark_conf.copy()
 
-        os.environ["PYSPARK_PYTHON"] = \
-            spark_conf["spark.executorEnv.PYSPARK_PYTHON"]
-        logging.info(i18n("Using spark config:\n{}")
-                     .format(spark_conf))
+        if "spark.executorEnv.PYSPARK_PYTHON" in spark_conf:
+            os.environ["PYSPARK_PYTHON"] = \
+                spark_conf["spark.executorEnv.PYSPARK_PYTHON"]
 
-        _spark = SparkSession.builder \
-                             .appName(app_name) \
-                             .master(spark_conf["master"])
+        _fmt_conf_str = "{\n"
+        for k, v in spark_conf.items():
+            _fmt_conf_str += "{}{}: {}\n".format(" "*4, k, v)
+        _fmt_conf_str += "}\n"
+        logging.info(
+            i18n("Using spark config:\n{s}").format(s=_fmt_conf_str))
 
-        _ = spark_conf.pop("master")
+        _spark = SparkSession.builder.appName(app_name)
+
+        if "master" in spark_conf:
+            _spark = _spark.master(spark_conf["master"])
+            _ = spark_conf.pop("master")
+
         for conf_key, conf_value in spark_conf.items():
             _spark = _spark.config(conf_key, conf_value)
 
@@ -306,8 +286,7 @@ class SparkBaseApp(metaclass=SingletonMeta):
         self._hdfs.initialize_hdfs(sc=self._sc)
         self._status = True
 
-        logging.info(i18n("Spark Version: {}")
-                     .format(self._spark.version))
+        logging.info(i18n("Spark Version: {}").format(self._spark.version))
 
     @property
     def spark(self):

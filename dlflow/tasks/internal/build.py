@@ -37,28 +37,29 @@ class _Build(TaskNode):
     def run(self):
         hdfs = HDFS()
 
-        hdfs_fmap_dir = Path(config.HDFS_MODEL_DIR).joinpath("fmap")
-        hdfs_ckpt_dir = Path(config.HDFS_MODEL_DIR).joinpath("ckpt")
+        local_static_dir = Path(config.MODELS_DIR).resolve()
+        hdfs_static_dir = Path(config.HDFS_MODEL_DIR).joinpath("static")
 
         fmap_dir = "fmap_{}".format(config.uuid)
         tmp_fmap_dir = Path(config.LOCAL_TMP_DIR).joinpath(fmap_dir)
-        local_fmap_link = Path(config.LOCAL_MODEL_DIR).joinpath("fmap")
-        local_fmap_dir = Path(config.LOCAL_MODEL_DIR).joinpath("ckpt")
+        local_fmap_dir = Path(config.LOCAL_FEMODEL_DIR).joinpath("fmap")
+        hdfs_fmap_dir = Path(config.HDFS_FEMODEL_DIR).joinpath("fmap")
 
         ckpt_dir = "ckpt_{}".format(config.uuid)
         tmp_ckpt_dir = Path(config.LOCAL_TMP_DIR).joinpath(ckpt_dir)
         local_ckpt_link = Path(config.LOCAL_MODEL_DIR).joinpath("ckpt")
         local_ckpt_dir = Path(config.LOCAL_MODEL_DIR).joinpath(ckpt_dir)
+        hdfs_ckpt_dir = Path(config.HDFS_MODEL_DIR).joinpath("ckpt")
 
         if hdfs.exists(hdfs_fmap_dir.joinpath("fmap.meta")):
             logging.info(
                 i18n("Using HDFS fmap: {}").format(hdfs_fmap_dir))
             hdfs.get(hdfs_fmap_dir, tmp_fmap_dir)
 
-        elif local_fmap_link.resolve().joinpath("fmap.meta").exists():
+        elif local_fmap_dir.joinpath("fmap.meta").exists():
             logging.info(
-                i18n("Using local fmap: {}").format(local_fmap_link))
-            shutil.copytree(local_fmap_link.resolve(), tmp_fmap_dir)
+                i18n("Using local fmap: {}").format(local_fmap_dir))
+            shutil.copytree(local_fmap_dir, tmp_fmap_dir)
 
         else:
             raise FmapNotExists(
@@ -85,13 +86,14 @@ class _Build(TaskNode):
 
             "hdfs_fmap_dir": hdfs_fmap_dir,
             "hdfs_ckpt_dir": hdfs_ckpt_dir,
+            "hdfs_static_dir": hdfs_static_dir,
 
             "tmp_fmap_dir": tmp_fmap_dir,
             "tmp_ckpt_dir": tmp_ckpt_dir,
 
             "local_fmap_dir": local_fmap_dir,
             "local_ckpt_dir": local_ckpt_dir,
+            "local_static_dir": local_static_dir,
 
-            "local_fmap_link": local_fmap_link,
             "local_ckpt_link": local_ckpt_link
         }

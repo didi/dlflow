@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 
 
+_DEFAULT_PARALLELISM = 100
 _HDFS_ENCODE_DIR = "$HDFS_WORKSPACE/encode/TAG=$FEATURE_TAG" \
                    "/<dt=$FEATURE_DATE:yyyy/mm/dd>"
 
@@ -37,7 +38,8 @@ class _Encode(TaskNode):
         if "HDFS_TFRECORD_DIR" in config:
             hdsf_tfrecord_dir = Path(config.HDFS_TFRECORD_DIR)
             if hdfs.exists(hdsf_tfrecord_dir / "_SUCCESS"):
-                logging.info(i18n("TFRecords already exists, skip encoding."))
+                logging.info(
+                    i18n("TFRecords already exists, skip encoding."))
                 return
 
         elif "HDFS_ENCODE_DIR" in config:
@@ -48,18 +50,29 @@ class _Encode(TaskNode):
                 return
 
         fmap_dir = "fmap_{}".format(config.uuid)
-        local_fmap_dir = Path(config.LOCAL_MODEL_DIR).joinpath(fmap_dir)
         tmp_fmap_dir = Path(config.LOCAL_TMP_DIR).joinpath(fmap_dir)
-        hdfs_fmap_dir = Path(config.HDFS_MODEL_DIR).joinpath("fmap")
-        hdfs_norm_dir = Path(config.HDFS_MODEL_DIR).joinpath("norm")
+
+        local_fmap_dir = Path(config.LOCAL_FEMODEL_DIR).joinpath("fmap")
+        local_norm_dir = Path(config.LOCAL_FEMODEL_DIR).joinpath("norm")
+
+        hdfs_fmap_dir = Path(config.HDFS_FEMODEL_DIR).joinpath("fmap")
+        hdfs_norm_dir = Path(config.HDFS_FEMODEL_DIR).joinpath("norm")
+
+        if not hdfs.exists(config.HDFS_FEMODEL_DIR):
+            hdfs.mkdirs(hdfs_fmap_dir.parent)
 
         spark_parser = Parser("spark")
         parser_cls = spark_parser.get_parser()
         normalizer_cls = spark_parser.get_normalizer()
 
+        if "SPARK.spark.default.parallelism" in config:
+            parallelism = int(config.SPARK.spark.default.parallelism)
+        else:
+            parallelism = _DEFAULT_PARALLELISM
+
         df = spark.read \
                   .parquet(config.HDFS_FEATURE_DIR) \
-                  .repartition(int(config.SPARK.spark.default.parallelism))
+                  .repartition(parallelism)
 
         parser = parser_cls()
 
@@ -90,24 +103,22 @@ class _Encode(TaskNode):
 
             if local_fmap_dir.exists():
                 logging.warning(
-                    i18n("Local fmap directory already exists, "
+                    i18n("Local directory {} already exists, "
                          "it will be overwritten: {}")
-                    .format(local_fmap_dir))
+                    .format("fmap", local_fmap_dir))
                 shutil.rmtree(local_fmap_dir)
             shutil.copytree(tmp_fmap_dir, local_fmap_dir)
-
-            local_fmap_link = Path(config.LOCAL_MODEL_DIR).joinpath("fmap")
-            if local_fmap_link.is_symlink():
-                local_fmap_link.unlink()
-            local_fmap_link.symlink_to(fmap_dir)
 
         parser.load(tmp_fmap_dir)
         encode_df = parser.transform(df)
 
         normalizer = normalizer_cls()
 
-        if not hdfs.exists(hdfs_norm_dir.joinpath("normalizers_metadata",
-                                                  "_SUCCESS")):
+        if hdfs.exists(hdfs_norm_dir.joinpath("normalizers_metadata",
+                                              "_SUCCESS")):
+            normalizer.load(hdfs_norm_dir)
+
+        else:
             hdfs.mkdirs(hdfs_norm_dir)
 
             try:
@@ -123,8 +134,14 @@ class _Encode(TaskNode):
                            bucket_conf=bucket_conf)
             normalizer.save(hdfs_norm_dir)
 
-        else:
-            normalizer.load(hdfs_norm_dir)
+            if local_norm_dir.exists():
+                logging.warning(
+                    i18n("Local directory {} already exists, "
+                         "it will be overwritten: {}")
+                    .format("norm", local_norm_dir))
+                shutil.rmtree(local_norm_dir)
+
+            hdfs.get(hdfs_norm_dir, local_norm_dir)
 
         norm_df = normalizer.transform(encode_df)
 

@@ -168,10 +168,6 @@ class _CONF(_FBaseTool):
 
 
 class FTools(object):
-    """
-    This factory class is exposed to users
-    """
-
     _type2cls = _FBaseTool.get_tools()
 
     @classmethod

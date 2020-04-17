@@ -9,7 +9,7 @@ DLFlow中模型主要由两部分组成，模型本身和模型输入。模型�
 构建模型需要导入如下两个模块
 ```python
 from dlflow.mgr import model
-from dlflow.model import ModelBase
+from dlflow.models import ModelBase
 ```
 
 用户开发的模型类应继承`ModelBase`，并实现 `build()` `train()` `evaluate()` `predict()` 四个方法。
@@ -51,7 +51,7 @@ class MyModel(ModelBase):
 构建输入需要导入如下模块
 ```python
 from dlflow.mgr import model
-from dlflow.model import InputBase
+from dlflow.models import InputBase
 ```
 
 输入类应继承`InputBase`，主要实现两个方法 `tfr_inputs()`  `rdd_inputs()`。

@@ -1,5 +1,5 @@
 from dlflow.mgr import model, config
-from dlflow.model import ModelBase
+from dlflow.models import ModelBase
 
 
 @model.reg("model register name")

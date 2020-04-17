@@ -26,7 +26,7 @@ from absl import app
 FLAGS = flags.FLAGS
 
 
-def main(*args, **kwargs):
+def _main(*args, **kwargs):
     if not FLAGS.config:
         raise ValueError("Parameter '--config' must be set.")
 
@@ -41,6 +41,9 @@ def main(*args, **kwargs):
 
 
 def run_app():
+    print(MOTW)
+    logging_initialize(log_level="info")
+
     flags.DEFINE_string("config", None, "* <Require> Path for config file.")
     flags.DEFINE_string("log_level", None, "<Option> Changing log level.")
     flags.DEFINE_string("lang", None, "<Option> Changing log language.")
@@ -50,10 +53,8 @@ def run_app():
 
     from dlflow.utils.check import env_version_check
     env_version_check()
-    app.run(main)
+    app.run(_main)
 
 
 if __name__ == "__main__":
-    print(MOTW)
-    logging_initialize(log_level="info")
     run_app()

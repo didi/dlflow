@@ -22,37 +22,36 @@ class _Embedding(tf.keras.layers.Layer):
         return tf.reshape(emb, [-1, out_dim])
 
 
-@model.reg("my_model")
-class MyModel(ModelBase):
+@model.reg("DNNRegression")
+class DNNRegression(ModelBase):
 
     cfg = config.setting(
         config.req("MODEL.learning_rate"),
-        config.req("MODEL.classes"),
         config.req("MODEL.layers"),
 
-        config.opt("MODEL.batch_size", 8)
+        config.opt("MODEL.batch_size", 128)
     )
 
     def __init__(self, fmap):
-        super(MyModel, self).__init__(fmap)
+        super(DNNRegression, self).__init__(fmap)
 
-        self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-        self.compute_loss = tf.keras.losses.SparseCategoricalCrossentropy()
+        self.optimizer = tf.keras.optimizers.Adam(
+            learning_rate=config.MODEL.learning_rate)
+        self.compute_loss = tf.keras.losses.MeanSquaredError()
 
         self.mean_loss = tf.keras.metrics.Mean()
-        self.acc = tf.keras.metrics.SparseCategoricalAccuracy()
 
         self.metrics = {
             "mean_loss": self.mean_loss,
-            "acc": self.acc
         }
-        self.msg_frac = 10
+
+        self.msg_frac = 100
 
     def build(self):
 
         concat_list = self.get_inputs(tp="nums")
         for ctg_inp, depth in self.get_inputs(tp="ctgs", with_depth=True):
-            _emb = _Embedding(depth, 6)(ctg_inp)
+            _emb = _Embedding(depth, 4)(ctg_inp)
             concat_list.append(_emb)
 
         net = tf.concat(concat_list, axis=1)
@@ -60,37 +59,33 @@ class MyModel(ModelBase):
         for size in config.MODEL.layers:
             net = tf.keras.layers.Dense(size, activation=tf.nn.relu)(net)
 
-        output = tf.keras.layers.Dense(
-            config.MODEL.classes, activation=tf.nn.softmax)(net)
+        output = tf.keras.layers.Dense(1)(net)
+        sigmoid = tf.nn.sigmoid(output)
 
-        arg_max = tf.argmax(output, axis=1)
-
-        self.set_output(output, "softmax")
-        self.set_output(arg_max, "argmax")
+        self.set_output(output, "output")
+        self.set_output(sigmoid, "sigmoid")
 
     @tf.function
     def train(self, feature, label):
-        _label = label["species"]
+        _label = label["label"]
 
         with tf.GradientTape() as tape:
-            output, _ = self.model(feature)
-            loss = self.compute_loss(_label, output)
+            logits, _ = self.model(feature)
+            loss = self.compute_loss(_label, logits)
 
         grads = tape.gradient(loss, self.model.trainable_variables)
         self.optimizer.apply_gradients(
             zip(grads, self.model.trainable_variables))
 
         self.mean_loss(loss)
-        self.acc(_label, output)
 
     @tf.function
     def evaluate(self, feature, label):
-        _label = label["species"]
+        _label = label["label"]
 
-        output, _ = self.model(feature)
-        loss = self.compute_loss(_label, output)
+        logits, _ = self.model(feature)
+        loss = self.compute_loss(_label, logits)
         self.mean_loss(loss)
-        self.acc(_label, output)
 
     @tf.function
     def predict(self, feature):

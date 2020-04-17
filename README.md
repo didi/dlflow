@@ -63,7 +63,7 @@ pip install dlflow
 
 通过源代码安装：
 ```
-git clone https://dlflow_repo/dlflow.git
+git clone  https://github.com/didi/dlflow.git
 cd dlflow
 python setup.py install
 ```
@@ -114,9 +114,11 @@ dlflow --config <CONFIGURATION FILE>.conf
 
 ## 技术方案
 **DLFlow整体架构**
+
 ![整体架构](docs/imgs/architecture.png)
 
 **DLFLow pipeline**
+
 ![Pipeline](docs/imgs/pipeline.png)
 
 

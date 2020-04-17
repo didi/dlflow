@@ -5,9 +5,6 @@ import gettext
 
 
 class LazyI18nMsg(object):
-    """
-    Lazy message for i18n
-    """
 
     def __init__(self, msg, translator=None):
         self._msg = msg
@@ -58,9 +55,6 @@ class LazyI18nMsg(object):
 
 
 class I18N(metaclass=SingletonMeta):
-    """
-    I18N Translator
-    """
 
     def __init__(self):
 

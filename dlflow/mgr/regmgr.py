@@ -1,32 +1,3 @@
-"""
-from dlflow.manager.workflow import TaskNode
-from dlflow.manager.regmgr import task
-
-
-@task.reg(alias=("foo1", ))
-class _UDT(TaskNode):
-    predecessor = ("_Predict", )
-    successor = ("_Evaluate", )
-
-    def __init__(self):
-        super(self.__class__, self).__init__()
-
-    def run(self):
-        pass
-
-
-@task.reg(alias=("foo2", ))
-class _UDT1(TaskNode):
-    predecessor = ("_Encode", "_Fe")
-    successor = ("_UDT",)
-
-    def __init__(self):
-        super(self.__class__, self).__init__()
-
-    def run(self):
-        pass
-"""
-
 from dlflow.utils.locale import i18n
 from dlflow.utils.utilclass import SingletonMeta
 from dlflow.mgr.errors import InstantiateNotAllowed
@@ -41,26 +12,13 @@ import re
 
 
 class _RegMeta(type):
-    """
-    可调用对象注册元类，用于生成注册类。
-    """
 
     def __init__(cls, *args, **kwargs):
-        """
-        设置了双层映射，以便于用户通过自定义名称找到类实体
-            1. 自定义名(alias name) -> 类标准名(class name)
-            2. 类标准名(class name) -> 类实体
-        """
-
         super(_RegMeta, cls).__init__(*args, **kwargs)
         cls.__MASKS__ = dict()
         cls.__REGS__ = dict()
 
     def __getreg__(cls, key):
-        """
-        注册是包含了 reg_key -> reg_key 的映射
-        """
-
         if key in cls.__MASKS__:
             reg_key = cls.__MASKS__[key]
         else:
@@ -87,14 +45,9 @@ class _RegMeta(type):
         return list(cls.__REGS__.keys())
 
     def reg(cls, *mask_keys):
-        """
-        注册方法
-        """
-
         act_alias = set(mask_keys)
 
         def _reg_act(obj):
-            # obj是一个function或者class
             reg_key = obj.__name__
             act_alias.add(reg_key)
 
@@ -151,13 +104,6 @@ class Collector(metaclass=SingletonMeta):
         self._collect(internal_model_dir)
 
     def _collect(self, src_dir):
-        """
-        _collect()目的在于import具体的任务和模型。
-
-        需要注册的任务和模型需要被特定的装饰器装饰，注册过程中装饰器首先被触发，
-        将类或者函数注册到对应的容器内。
-        """
-
         src_dir = Path(src_dir).resolve()
 
         for cur, _, files in os.walk(src_dir):

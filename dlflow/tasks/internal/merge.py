@@ -68,8 +68,8 @@ class _Merge(TaskNode):
 
         spark_conf = "\n".join(params)
 
-        _model_dir = Path(config.HDFS_MODEL_DIR)
-        model_dir = _model_dir.joinpath("feature").as_posix()
+        _model_dir = Path(config.HDFS_FEMODEL_DIR)
+        hdfs_merge_dir = _model_dir.joinpath("merge").as_posix()
 
         out_dir = Path(config.RAW_FEATURES).as_posix()
 
@@ -77,7 +77,7 @@ class _Merge(TaskNode):
                                     seed_sql=seed_sql,
                                     feature_config=feature_config_file,
                                     feature_date=config.FEATURE_DATE,
-                                    feature_model_hdfs=model_dir,
+                                    feature_model_hdfs=hdfs_merge_dir,
                                     feature_out_hdfs=out_dir,
                                     fit=fit)
 

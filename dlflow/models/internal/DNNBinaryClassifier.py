@@ -22,31 +22,33 @@ class _Embedding(tf.keras.layers.Layer):
         return tf.reshape(emb, [-1, out_dim])
 
 
-@model.reg("my_model")
-class MyModel(ModelBase):
+@model.reg("DNNBinaryClassifier")
+class DNNBinaryClassifier(ModelBase):
 
     cfg = config.setting(
         config.req("MODEL.learning_rate"),
-        config.req("MODEL.classes"),
         config.req("MODEL.layers"),
 
-        config.opt("MODEL.batch_size", 8)
+        config.opt("MODEL.batch_size", 128)
     )
 
     def __init__(self, fmap):
-        super(MyModel, self).__init__(fmap)
+        super(DNNBinaryClassifier, self).__init__(fmap)
 
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-        self.compute_loss = tf.keras.losses.SparseCategoricalCrossentropy()
+        self.compute_loss = tf.keras.losses.BinaryCrossentropy()
 
         self.mean_loss = tf.keras.metrics.Mean()
-        self.acc = tf.keras.metrics.SparseCategoricalAccuracy()
+        self.acc = tf.keras.metrics.BinaryAccuracy()
+        self.auc = tf.keras.metrics.AUC()
 
         self.metrics = {
             "mean_loss": self.mean_loss,
-            "acc": self.acc
+            "acc": self.acc,
+            "auc": self.auc
         }
-        self.msg_frac = 10
+
+        self.msg_frac = 100
 
     def build(self):
 
@@ -60,17 +62,15 @@ class MyModel(ModelBase):
         for size in config.MODEL.layers:
             net = tf.keras.layers.Dense(size, activation=tf.nn.relu)(net)
 
-        output = tf.keras.layers.Dense(
-            config.MODEL.classes, activation=tf.nn.softmax)(net)
+        logits = tf.keras.layers.Dense(1)(net)
+        sigmoid = tf.nn.sigmoid(logits)
 
-        arg_max = tf.argmax(output, axis=1)
-
-        self.set_output(output, "softmax")
-        self.set_output(arg_max, "argmax")
+        self.set_output(output, "logits")
+        self.set_output(sigmoid, "sigmoid")
 
     @tf.function
     def train(self, feature, label):
-        _label = label["species"]
+        _label = label["label"]
 
         with tf.GradientTape() as tape:
             output, _ = self.model(feature)
@@ -82,15 +82,18 @@ class MyModel(ModelBase):
 
         self.mean_loss(loss)
         self.acc(_label, output)
+        self.auc(_label, output)
+
 
     @tf.function
     def evaluate(self, feature, label):
-        _label = label["species"]
+        _label = label["label"]
 
-        output, _ = self.model(feature)
+        output = self.model(feature)
         loss = self.compute_loss(_label, output)
         self.mean_loss(loss)
         self.acc(_label, output)
+        self.auc(_label, output)
 
     @tf.function
     def predict(self, feature):

@@ -13,12 +13,6 @@ class ModelBase(metaclass=abc.ABCMeta):
     def __init__(self, fmap):
         super(ModelBase, self).__init__()
 
-        gpus = tf.config.experimental.list_physical_devices(
-            device_type='GPU')
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(device=gpu,
-                                                     enable=True)
-
         self.metrics = {}
         self.msg_frac = 100
 
@@ -80,12 +74,14 @@ class ModelBase(metaclass=abc.ABCMeta):
                 feature = feature[0]
 
             outputs = self.predict(feature)
+            if isinstance(outputs, tf.Tensor):
+                outputs = [outputs]
 
             for l, k in zip(pred_pkeys, pkey):
-                l.append(k.numpy().squeeze())
+                l.append(k.numpy().squeeze(axis=1))
 
             for l, p in zip(pred_outputs, outputs):
-                l.append(p.numpy().squeeze())
+                l.append(p.numpy().squeeze(axis=1))
 
         np_list = []
         for i in pred_pkeys:

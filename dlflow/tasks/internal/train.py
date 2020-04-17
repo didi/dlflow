@@ -22,6 +22,12 @@ class _Train(TaskNode):
 
     @TaskNode.timeit
     def run(self):
+        gpus = tf.config.experimental.list_physical_devices(
+            device_type='GPU')
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(device=gpu,
+                                                     enable=True)
+
         hdfs = HDFS()
 
         dirs = config._build_dirs
@@ -29,8 +35,10 @@ class _Train(TaskNode):
         tmp_fmap_dir = dirs["tmp_fmap_dir"]
         tmp_ckpt_dir = dirs["tmp_ckpt_dir"]
         hdfs_ckpt_dir = dirs["hdfs_ckpt_dir"]
+        hdfs_static_dir = dirs["hdfs_static_dir"]
         local_ckpt_dir = dirs["local_ckpt_dir"]
         local_ckpt_link = dirs["local_ckpt_link"]
+        local_static_dir = dirs["local_static_dir"]
 
         fmap = Fmap.load(tmp_fmap_dir)
 
@@ -71,5 +79,9 @@ class _Train(TaskNode):
             hdfs.delete(hdfs_ckpt_dir)
         logging.info(i18n("Put ckpt to HDFS: {}").format(hdfs_ckpt_dir))
         hdfs.put(local_ckpt_dir, hdfs_ckpt_dir)
+
+        if hdfs.exists(hdfs_static_dir):
+            hdfs.delete(hdfs_static_dir)
+        hdfs.put(local_static_dir, hdfs_static_dir)
 
         logging.info(i18n("Training don."))

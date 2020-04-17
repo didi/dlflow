@@ -1,5 +1,5 @@
 from dlflow.mgr import model, config
-from dlflow.model import InputBase
+from dlflow.models import InputBase
 
 from dlflow.features import PRESET_BUCKETS
 from collections import OrderedDict
