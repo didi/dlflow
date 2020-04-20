@@ -6,8 +6,8 @@ Thanks for considering to contribute this project. All issues and pull requests 
 
 Before sending pull request to this project, please read and follow guidelines below.
 
-1. Branch: We accept pull request on `master` branch.	
-2. Coding style: Follow the coding style used in VirtualAPK.
+1. Branch: We accept pull request on `master` branch.   
+2. Coding style: Make sure to follow [PEP8](https://www.python.org/dev/peps/pep-0008).
 3. Commit message: Use English and be aware of your spell.
 4. Test: Make sure to test your code.
 
