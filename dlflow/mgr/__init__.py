@@ -3,7 +3,7 @@ from .regmgr import Collector
 from .cfgmgr import config
 
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 MOTW = """
 Welcome to
