@@ -11,6 +11,7 @@ import os
 
 
 class BaseEngine(metaclass=abc.ABCMeta):
+
     def __init__(self):
         pass
 
@@ -20,6 +21,7 @@ class BaseEngine(metaclass=abc.ABCMeta):
 
 
 class LocalEngine(BaseEngine):
+
     def __init__(self):
         super(LocalEngine, self).__init__()
 
@@ -43,6 +45,10 @@ class Engine(object):
         self._log_level = None
         self._log_dir = None
         self._mode = None
+
+        config.setting(
+            config.sys("STEPS"),
+        )("_SYS")
 
     @property
     def engine(self):

@@ -78,10 +78,18 @@ class ModelBase(metaclass=abc.ABCMeta):
                 outputs = [outputs]
 
             for l, k in zip(pred_pkeys, pkey):
-                l.append(k.numpy().squeeze(axis=1))
+                if k.shape[-1] == 1:
+                    k_np = k.numpy().squeeze(axis=len(k.shape) - 1)
+                else:
+                    k_np = k.numpy()
+                l.append(k_np)
 
             for l, p in zip(pred_outputs, outputs):
-                l.append(p.numpy().squeeze(axis=1))
+                if p.shape[-1] == 1:
+                    p_np = p.numpy().squeeze(axis=len(p.shape) - 1)
+                else:
+                    p_np = p.numpy()
+                l.append(p_np)
 
         np_list = []
         for i in pred_pkeys:

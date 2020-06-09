@@ -45,8 +45,6 @@ class DNNRegression(ModelBase):
             "mean_loss": self.mean_loss,
         }
 
-        self.msg_frac = 100
-
     def build(self):
 
         concat_list = self.get_inputs(tp="nums")

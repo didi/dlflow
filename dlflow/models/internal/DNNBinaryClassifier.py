@@ -26,17 +26,19 @@ class _Embedding(tf.keras.layers.Layer):
 class DNNBinaryClassifier(ModelBase):
 
     cfg = config.setting(
-        config.req("MODEL.learning_rate"),
         config.req("MODEL.layers"),
 
+        config.opt("MODEL.learning_rate", 0.001),
         config.opt("MODEL.batch_size", 128)
     )
 
     def __init__(self, fmap):
         super(DNNBinaryClassifier, self).__init__(fmap)
 
-        self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-        self.compute_loss = tf.keras.losses.BinaryCrossentropy()
+        self.optimizer = tf.keras.optimizers.Adam(
+            learning_rate=config.MODEL.learning_rate)
+        self.compute_loss = tf.keras.losses.BinaryCrossentropy(
+            from_logits=True)
 
         self.mean_loss = tf.keras.metrics.Mean()
         self.acc = tf.keras.metrics.BinaryAccuracy()
@@ -48,10 +50,7 @@ class DNNBinaryClassifier(ModelBase):
             "auc": self.auc
         }
 
-        self.msg_frac = 100
-
     def build(self):
-
         concat_list = self.get_inputs(tp="nums")
         for ctg_inp, depth in self.get_inputs(tp="ctgs", with_depth=True):
             _emb = _Embedding(depth, 6)(ctg_inp)
@@ -65,7 +64,7 @@ class DNNBinaryClassifier(ModelBase):
         logits = tf.keras.layers.Dense(1)(net)
         sigmoid = tf.nn.sigmoid(logits)
 
-        self.set_output(output, "logits")
+        self.set_output(logits, "logits")
         self.set_output(sigmoid, "sigmoid")
 
     @tf.function
@@ -73,27 +72,26 @@ class DNNBinaryClassifier(ModelBase):
         _label = label["label"]
 
         with tf.GradientTape() as tape:
-            output, _ = self.model(feature)
-            loss = self.compute_loss(_label, output)
+            logits, sigmoid = self.model(feature)
+            loss = self.compute_loss(_label, logits)
 
         grads = tape.gradient(loss, self.model.trainable_variables)
         self.optimizer.apply_gradients(
             zip(grads, self.model.trainable_variables))
 
         self.mean_loss(loss)
-        self.acc(_label, output)
-        self.auc(_label, output)
-
+        self.acc(_label, sigmoid)
+        self.auc(_label, sigmoid)
 
     @tf.function
     def evaluate(self, feature, label):
         _label = label["label"]
 
-        output = self.model(feature)
-        loss = self.compute_loss(_label, output)
+        logits, sigmoid = self.model(feature)
+        loss = self.compute_loss(_label, logits)
         self.mean_loss(loss)
-        self.acc(_label, output)
-        self.auc(_label, output)
+        self.acc(_label, sigmoid)
+        self.auc(_label, sigmoid)
 
     @tf.function
     def predict(self, feature):

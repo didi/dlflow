@@ -29,7 +29,6 @@ LEVEL_MAPPING_C2S = {
 
 
 def _to_dict(config_tree: ConfigTree):
-
     def _parser(obj):
         if isinstance(obj, (ConfigTree, dict)):
             value = {}
@@ -45,7 +44,6 @@ def _to_dict(config_tree: ConfigTree):
 
 
 def _to_dense_dict(config_tree: ConfigTree):
-
     dense_dict = {}
 
     def _parser(obj, prefix=None):
@@ -120,7 +118,6 @@ class _ConfigLoader(ConfigFactory):
 
 
 class _ConfigManager(object):
-
     def __init__(self):
         self._conf = {}
         self._desc = {}
@@ -152,7 +149,7 @@ class _ConfigManager(object):
 
 class _ConfigMeta(metaclass=SingletonMeta):
 
-    _UDC_PATTERN = re.compile(r"^(\w+?)=(.*)$")
+    _UDC_PATTERN = re.compile(r"^([\w][\w.]*?(?<!\.))=(.*)$")
 
     _cfg_mgr = _ConfigManager()
     _cfg_loader = _ConfigLoader()
@@ -386,6 +383,5 @@ class _Config(_ConfigMeta):
 config = _Config()
 
 config.setting(
-    config.sys("STEPS"),
     config.opt("ROOT", os.getcwd())
 )("_SYS")

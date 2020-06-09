@@ -241,7 +241,7 @@ class SparkBaseApp(metaclass=SingletonMeta):
         self._hdfs = HDFS()
         self._status = False
 
-    def initialize_spark(self, app_name, spark_conf, reuse=False):
+    def initialize_spark(self, app_name=None, spark_conf=None, reuse=False):
         if self._status and not reuse:
             logging.info(i18n("Using exists spark session."))
             return
@@ -251,37 +251,40 @@ class SparkBaseApp(metaclass=SingletonMeta):
         if self._hdfs.status:
             self._hdfs.close()
 
-        logging.info(i18n("Initializing Spark App: {}").format(app_name))
-
         init_spark()
         from pyspark.sql import SparkSession
 
-        spark_conf = spark_conf.copy()
+        _spark = SparkSession.builder
 
-        if "spark.executorEnv.PYSPARK_PYTHON" in spark_conf:
-            os.environ["PYSPARK_PYTHON"] = \
-                spark_conf["spark.executorEnv.PYSPARK_PYTHON"]
+        if app_name is not None:
+            _spark = _spark.appName(app_name)
+            logging.info(i18n("Initializing Spark App: {}").format(app_name))
 
-        _fmt_conf_str = "{\n"
-        for k, v in spark_conf.items():
-            _fmt_conf_str += "{}{}: {}\n".format(" "*4, k, v)
-        _fmt_conf_str += "}\n"
-        logging.info(
-            i18n("Using spark config:\n{s}").format(s=_fmt_conf_str))
+        if isinstance(spark_conf, dict):
+            spark_conf = spark_conf.copy()
+            self.spark_conf = spark_conf.copy()
 
-        _spark = SparkSession.builder.appName(app_name)
+            if "spark.executorEnv.PYSPARK_PYTHON" in spark_conf:
+                os.environ["PYSPARK_PYTHON"] = \
+                    spark_conf["spark.executorEnv.PYSPARK_PYTHON"]
 
-        if "master" in spark_conf:
-            _spark = _spark.master(spark_conf["master"])
-            _ = spark_conf.pop("master")
+            _fmt_conf_str = "{\n"
+            for k, v in spark_conf.items():
+                _fmt_conf_str += "{}{}: {}\n".format(" "*4, k, v)
+            _fmt_conf_str += "}\n"
+            logging.info(
+                i18n("Using spark config:\n{s}").format(s=_fmt_conf_str))
 
-        for conf_key, conf_value in spark_conf.items():
-            _spark = _spark.config(conf_key, conf_value)
+            if "master" in spark_conf:
+                _spark = _spark.master(spark_conf["master"])
+                _ = spark_conf.pop("master")
+
+            for conf_key, conf_value in spark_conf.items():
+                _spark = _spark.config(conf_key, conf_value)
 
         self._spark = _spark.enableHiveSupport().getOrCreate()
         self._sc = self._spark.sparkContext
         self.app_name = app_name
-        self.spark_conf = spark_conf.copy()
 
         self._hdfs.initialize_hdfs(sc=self._sc)
         self._status = True

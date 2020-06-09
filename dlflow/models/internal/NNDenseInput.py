@@ -11,20 +11,18 @@ import tensorflow as tf
 class NNDenseInput(InputBase):
 
     cfg = config.setting(
-        config.opt("MODEL.epochs", 1),
+        config.opt("MODEL.epochs", None),
         config.opt("MODEL.batch_size", 1),
         config.opt("MODEL.parallel", 4),
-        config.opt("MODEL.shuffle_size", None)
+        config.opt("MODEL.shuffle_size", None),
+        config.opt("MODEL.drop_remainder", False),
+        config.opt("MODEL.buffer_size", None)
     )
 
     def __init__(self, fmap):
         super(NNDenseInput, self).__init__(fmap)
 
     def tfr_inputs(self, files):
-        """
-        For train and evaluate.
-        """
-
         feature_dict = OrderedDict()
 
         for fe in self.fmap.primary_keys.get_features():
@@ -53,10 +51,14 @@ class NNDenseInput(InputBase):
 
         parallel = config.MODEL.parallel
         dataset = tf.data \
-                    .TFRecordDataset(files, num_parallel_reads=parallel) \
-                    .map(_parse_single_example, num_parallel_calls=parallel) \
-                    .batch(config.MODEL.batch_size) \
-                    .repeat(config.MODEL.epochs)
+                    .TFRecordDataset(filenames=files,
+                                     buffer_size=config.MODEL.buffer_size,
+                                     num_parallel_reads=parallel) \
+                    .map(map_func=_parse_single_example,
+                         num_parallel_calls=parallel) \
+                    .batch(batch_size=config.MODEL.batch_size,
+                           drop_remainder=config.MODEL.drop_remainder) \
+                    .repeat(count=config.MODEL.epochs)
 
         if config.MODEL.shuffle_size:
             dataset = dataset.shuffle(config.MODEL.shuffle_size)
@@ -64,10 +66,6 @@ class NNDenseInput(InputBase):
         return dataset
 
     def rdd_inputs(self, rdd, batch_size):
-        """
-        For spark predict.
-        """
-
         primary_keys = []
         features = []
 
@@ -112,6 +110,6 @@ class NNDenseInput(InputBase):
                          .from_generator(generator=rdd_generator,
                                          output_shapes=tuple(out_shape),
                                          output_types=tuple(out_dtype)) \
-                         .batch(batch_size)
+                         .batch(batch_size, drop_remainder=False)
 
         return dataset
