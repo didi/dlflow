@@ -48,7 +48,7 @@ cd ecosystem/spark/spark-tensorflow-connector/
 mvn versions:set -DnewVersion=1.14.0
 mvn clean install
 ```
-项目构建后生成 `target/spark-tensorflow-connector_2.11-1.14.0.jar`，后续需要确保该jar被天交到 
+项目构建后生成 `target/spark-tensorflow-connector_2.11-1.14.0.jar`，后续需要确保该jar被添加到 
 `spark.jars` 中。
 关于Spark读写TFRecoreds更多内容请参见 [spark-tensorflow-connector](https://github.com/tensorflow/ecosystem/tree/master/spark/spark-tensorflow-connector)。
 
