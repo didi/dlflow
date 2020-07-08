@@ -115,11 +115,11 @@ dlflow --config <CONFIGURATION FILE>.conf
 ## 技术方案
 **DLFlow整体架构**
 
-![整体架构](docs/imgs/architecture.png)
+![整体架构](https://gitee.com/wubalabadubdub/dlflow/raw/master/architecture.png)
 
 **DLFLow pipeline**
 
-![Pipeline](docs/imgs/pipeline.png)
+![Pipeline](https://gitee.com/wubalabadubdub/dlflow/raw/master/pipeline.png)
 
 
 ## Contributing
