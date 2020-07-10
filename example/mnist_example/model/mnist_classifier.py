@@ -14,7 +14,6 @@ class MyModel(ModelBase):
         config.req("MODEL.learning_rate"),
         config.req("MODEL.classes"),
         config.req("MODEL.layers"),
-
         config.opt("MODEL.batch_size", 8)
     )
 
