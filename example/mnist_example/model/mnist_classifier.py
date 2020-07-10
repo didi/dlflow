@@ -2,9 +2,10 @@ from dlflow.mgr import model, config
 from dlflow.models import ModelBase
 
 import tensorflow as tf
-
-
-from model.model import CNN
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Dense, Conv2D
+from tensorflow.keras.layers import ReLU, Dropout, Flatten
+from tensorflow.keras.layers import BatchNormalization, MaxPooling2D
 
 
 @model.reg("mnist_cnn")
@@ -36,7 +37,7 @@ class MyModel(ModelBase):
 
         concat_list = self.get_inputs(tp="nums")
         images = tf.concat(concat_list, axis=1)
-        images = tf.reshape(images,(-1,28,28,1))
+        images = tf.reshape(images, (-1, 28, 28, 1))
 
         output = CNN(n_class=10)(images)
 
@@ -72,3 +73,25 @@ class MyModel(ModelBase):
     def predict(self, feature):
         pred = self.model(feature)
         return pred
+
+
+class CNN(Model):
+    def __init__(self, n_class=10):
+        super(CNN, self).__init__()
+
+        self.conv1 = Conv2D(32, (3, 3), activation='relu')
+        self.conv2 = Conv2D(64, (3, 3), activation='relu')
+        self.max_pooing2d = MaxPooling2D((2, 2))
+        self.flatten = Flatten()
+        self.dense1 = Dense(64, activation='relu')
+        self.dense2 = Dense(n_class, activation='softmax')
+
+    def call(self, inputs):
+        x = self.conv1(inputs)
+        x = self.max_pooing2d(x)
+        x = self.conv2(x)
+        x = self.max_pooing2d(x)
+        x = self.flatten(x)
+        x = self.dense1(x)
+        x = self.dense2(x)
+        return x
