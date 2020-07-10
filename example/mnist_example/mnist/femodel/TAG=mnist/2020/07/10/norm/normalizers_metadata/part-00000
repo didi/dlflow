@@ -1,1 +1,0 @@
-{"default": {"method": "minmax", "param": {"min": 0.0, "max": 1.0, "inputCol": "default_nums", "outputCol": "default_nums_minmax"}, "save_dir": "/user/dm/warehouse/dm.db/user/zhoujianguo/tmp/mnist/femodel/TAG=mnist/2020/07/10/norm/default"}}
