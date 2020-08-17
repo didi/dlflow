@@ -136,7 +136,7 @@ object HdfsUtility extends Logging with IColorText {
           None
         }
 
-        tryDate = baseDate.minusDays(1)
+        tryDate = baseDate.minusDays(accumTry)
         accumTry += 1
 
       }
